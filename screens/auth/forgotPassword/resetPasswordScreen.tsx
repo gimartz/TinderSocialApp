@@ -16,8 +16,6 @@ import {TextInput} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../../src/store';
-import {CompleteForgotPasswordReset} from '../../../src/store/features/auth/authSlice';
 
 type RouteParams = {
   verificationId: string;
@@ -41,9 +39,7 @@ const ForgotPasswordCompleteScreen = () => {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
 
-  const dispatch = useDispatch<AppDispatch>();
-  const {passwordResetIsLoading} = useSelector((store: RootState) => store.auth);
-
+ 
   const handleGoBack = () => navigation.goBack();
 
   const validatePasswordFrontend = (password: string) => {
@@ -101,29 +97,8 @@ const ForgotPasswordCompleteScreen = () => {
     // Validate password complexity
     if (!validatePasswordFrontend(newPassword)) return;
 
-    try {
-      const response = await dispatch(
-        CompleteForgotPasswordReset({
-          verificationId,
-          code,
-          newPassword,
-        }),
-      );
-      if (response.meta.requestStatus === 'fulfilled') {
-        Alert.alert('Success', 'Password updated successfully!');
+     Alert.alert('Success', 'Password updated successfully!');
         navigation.navigate('Login');
-      } else {
-        // console.log(response)
-        Alert.alert(
-          'Error',
-          typeof response.payload === 'string'
-            ? response.payload
-            : 'Failed to reset password',
-        );
-      }
-    } catch (error: any) {
-      Alert.alert('Error', error.data?.error || 'Reset failed');
-    }
   };
 
    // Add this useEffect to validate whenever passwords change
@@ -242,7 +217,7 @@ const ForgotPasswordCompleteScreen = () => {
             <TouchableOpacity
               style={[
                 styles.button,
-                (passwordResetIsLoading || 
+                ( 
                  !code || 
                  !newPassword || 
                  !confirmPassword || 
@@ -251,18 +226,16 @@ const ForgotPasswordCompleteScreen = () => {
               ]}
               onPress={handleSubmit}
               disabled={
-                passwordResetIsLoading || 
+                
                 !code || 
                 !newPassword || 
                 !confirmPassword || 
                 !!passwordError || 
                 !!confirmPasswordError
               }>
-              {passwordResetIsLoading ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
+             
                 <Text style={styles.buttonText}>Reset Password</Text>
-              )}
+              
             </TouchableOpacity>
           </View>
         </ScrollView>

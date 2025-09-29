@@ -32,7 +32,7 @@ import {STORAGE_KEYS} from '../../utils/storage';
 import { THEME } from '../theme';
 
 // Replace with your actual logo
-const logo = require('../../assets/rider-logo.jpeg'); // Ensure this path is correct and the image exists
+const logo = require('../../assets/logo.png'); // Ensure this path is correct and the image exists
 
 const LoginScreen = ({navigation}) => {
   const {showAlert} = useCustomAlert();
@@ -43,12 +43,10 @@ const LoginScreen = ({navigation}) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [deviceOs] = useState(Platform.OS === 'ios' ? 'IOS' : 'ANDROID');
 
-  const FcmToken = useSelector(selectFcmToken);
+  
 
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
-  const dispatch = useDispatch();
 
   const validateFields = () => {
     let isValid = true;
@@ -80,35 +78,17 @@ const LoginScreen = ({navigation}) => {
     setLoading(true);
 
     try {
-      const resultAction = await dispatch(loginUser(vendor));
-
-      if (loginUser.fulfilled.match(resultAction)) {
-        try {
-          const payload = {token: FcmToken, deviceOs: deviceOs};
-          await dispatch(UpdateFcm(payload)); // No need to await if not using the result immediately
-        } catch {
-          console.log('FCM token could not be updated on login');
-        }
     
         // Navigate to Dashboard
         navigation.navigate('MainApp', {screen: 'Dashboard'});
         showAlert('success', 'Success', 'Welcome back');
-      } else {
-        console.log('Login failed:', resultAction.payload);
-        showAlert(
-          'error',
-          'Error',
-          typeof resultAction.payload === 'string'
-            ? resultAction.payload
-            : 'Login Failed',
-        );
-      }
+    
     } catch (err) {
       console.error('An unexpected error occurred', err);
       showAlert(
         'error',
         'Error',
-        err?.message || 'An unexpected error occurred. Please try again.',
+      
       );
     } finally {
       setLoading(false);

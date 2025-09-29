@@ -20,9 +20,8 @@ import ForgotPasswordScreen from './screens/auth/forgotPassword/forgotPasswordSc
 import ForgotPasswordCompleteScreen from './screens/auth/forgotPassword/resetPasswordScreen';
 import SplashScreen from './screens/auth/splash';
 import ChatTabsScreen from './screens/chat/index';
-import ChangePasswordScreen from './screens/settings/generalSettings/restaurantInformation/passwordReset/changepass';
+import ChatsScreen from './screens/chat/chat';
 import LandingScreen from './screens/auth/landing';
-import GeneralProfileSettings from './screens/settings/generalSettings/restaurantInformation/accountSettings/generalProfileSettingsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,7 +46,7 @@ function ChatNavigator() {
         name="MenuTabs"
         component={ChatTabsScreen}
       />
-      <ChatStack.Screen name="MenuItem" component={MenuScreen} />
+      <ChatStack.Screen name="chatItem" component={ChatsScreen} />
    
   
     </ChatStack.Navigator>
@@ -62,15 +61,7 @@ function SettingsNavigator() {
       screenOptions={{headerShown: false}}>
       <SettingsStack.Screen name="Setting" component={SettingsScreen} />
     
-      <SettingsStack.Screen
-        name="GeneralProfileSettings"
-        component={GeneralProfileSettings}
-      />
-
-      <SettingsStack.Screen
-        name="ChangePassword"
-        component={ChangePasswordScreen}
-      />
+   
   
     </SettingsStack.Navigator>
   );
@@ -82,18 +73,7 @@ function MainAppTabs() {
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
-        tabBarIcon: ({focused, color, size}) => {
-          let iconName: string = '';
-
-          if (route.name === 'Dashboard') iconName = 'dashboard';
-          else if (route.name === 'Orders') iconName = 'list-alt';
-          else if (route.name === 'Menu') iconName = 'food-bank';
-         
-          else if (route.name === 'Settings')
-            iconName = focused ? 'settings' : 'settings-applications';
-
-          return <Icon name={iconName} size={size} color={color} />;
-        },
+  
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.grey_medium,
         tabBarStyle: {backgroundColor: colors.background},
@@ -123,7 +103,7 @@ function MainAppTabs() {
 
 function OnBoardingNavigator() {
   return (
-    <OnboardStack.Navigator screenOptions={{headerShown: false}}>
+    <OnboardStack.Navigator  screenOptions={{headerShown: false}}>
       <OnboardStack.Screen name="land" component={LandingScreen} />
       <OnboardStack.Screen name="Login" component={LoginScreen} />
       <OnboardStack.Screen name="Register" component={RegisterScreen} />

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Appbar, Card, Button} from 'react-native-paper';
 
 import {THEME} from '../theme';
-const ChatsScreen = () => {
+const ChatsScreen = ({navigation}) => {
   const renderOnlineUser = ({ item }: { item: OnlineUser }) => (
     <TouchableOpacity style={styles.onlineUserContainer}>
       <View>
@@ -25,7 +25,7 @@ const ChatsScreen = () => {
     }
     
     return (
-        <TouchableOpacity style={styles.chatItemContainer}>
+        <TouchableOpacity style={styles.chatItemContainer} onPress={navigation.navigate('chatItem')}>
             <Image source={{ uri: item.avatar }} style={styles.chatAvatar} />
             <View style={styles.chatTextContainer}>
                 <Text style={styles.chatName}>{item.name}</Text>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-    appbar: {backgroundColor: THEME.DARK_CHARCOAL, elevation: 0},
+    appbar: {backgroundColor: '#BF007',elevation: 0},
   appbarTitle: {color: THEME.CREAM_WHITE, fontWeight: '800', fontSize: 22},
   lastMessageContainer: {
     flexDirection: 'row',

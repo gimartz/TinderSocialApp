@@ -15,8 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {TextInput} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
-import {InitiateForgotPasswordReset} from '../../../src/store/features/auth/authSlice';
-import {AppDispatch, RootState} from '../../../src/store';
+
 
 type NavigationProps = {
   goBack: () => void;
@@ -25,40 +24,15 @@ type NavigationProps = {
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState<string>('');
-  const dispatch = useDispatch<AppDispatch>();
 
-  const {passwordResetIsLoading} = useSelector(
-    (store: RootState) => store.auth,
-  );
+
+ 
   const navigation = useNavigation<NavigationProps>();
 
   const handleGoBack = () => navigation.goBack();
 
   const handleSubmit = async () => {
-    try {
-      const response = await dispatch(InitiateForgotPasswordReset({email}));
-      // console.log('forgot password response:', response);
-      if (response.meta.requestStatus === 'fulfilled') {
-        navigation.navigate('ForgotPasswordComplete', {
-          verificationId: response?.payload?.data?.verificationId,
-          email,
-        });
-      } else {
-        // console.log('forgot password error:', response.payload);
-        Alert.alert(
-          'Error',
-          typeof response.payload === 'string'
-            ? response.payload
-            : 'Failed to reset password',
-        );
-      }
-    } catch (error: any) {
-      console.log('forgot password error:', error?.response, error);
-      Alert.alert(
-        'Error',
-        error?.data?.error ? error?.data?.error : 'Failed to send code',
-      );
-    }
+   navigation.navigate('ForgotPasswordComplete')
   };
 
   return (
@@ -111,15 +85,13 @@ const ForgotPasswordScreen = () => {
             <TouchableOpacity
               style={[
                 styles.button,
-                passwordResetIsLoading && styles.buttonDisabled,
+              styles.buttonDisabled,
               ]}
               onPress={handleSubmit}
-              disabled={passwordResetIsLoading}>
-              {passwordResetIsLoading ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
+           >
+          
                 <Text style={styles.buttonText}>Send Verification Code</Text>
-              )}
+          
             </TouchableOpacity>
           </View>
         </ScrollView>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "304527019542",
+    "project_id": "speedit-restaurant-android",
+    "storage_bucket": "speedit-restaurant-android.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304527019542:android:b9cea5610f17f3004daf37",
+        "android_client_info": {
+          "package_name": "com.speeditvendors"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN9txprmjuRYMKF_EUBYWFza7jrG4tCpA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

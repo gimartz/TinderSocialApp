@@ -8,10 +8,10 @@ import {
   Text,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../src/store';
-import {initializeAuthFromStorage} from '../../src/store/features/auth/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {THEME} from '../theme';
 import {useFocusEffect} from '@react-navigation/native';
+import { useAuth } from '../context/cat';
 
 const {width, height} = Dimensions.get('window');
 
@@ -20,11 +20,9 @@ type Props = {
 };
 
 const SplashScreen = ({navigation}: Props) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const {isInitialized, isAuthenticated, loading} = useSelector(
-    (state: RootState) => state.auth,
-  );
-
+   const { isAuthenticated } = useAuth();
+  const [isInitialized, setInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [navigationDecided, setNavigationDecided] = useState(false);
   const [minWaitTimeElapsed, setMinWaitTimeElapsed] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
@@ -35,11 +33,22 @@ const SplashScreen = ({navigation}: Props) => {
   // Initialize auth state from AsyncStorage
   useEffect(() => {
     const init = async () => {
-      await dispatch(initializeAuthFromStorage());
-    };
-    init();
-  }, [dispatch]);
 
+      try {
+        const value = await AsyncStorage.getItem('@viewedOnboarding');
+        if (value !== null) {
+          setInitialized(true);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+
+    init();
+  }, []);
   // Set minimum wait timer (5 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,7 +64,7 @@ const SplashScreen = ({navigation}: Props) => {
       // Navigate based on auth status
       if (!isAuthenticated) {
         navigation.replace('OnboardLogin', {
-          screen: 'Login',
+          screen: 'Land',
         });
       } else {
         navigation.replace('MainApp', {screen: 'Dashboard'});
@@ -116,10 +125,10 @@ const SplashScreen = ({navigation}: Props) => {
 
   // Handle navigation decision once auth is initialized
   useEffect(() => {
-    if (isInitialized && !loading) {
+    if (isInitialized && !isLoading) {
       setNavigationDecided(true);
     }
-  }, [isInitialized, loading]);
+  }, [isInitialized, isLoading]);
 
   return (
     <View style={styles.container}>

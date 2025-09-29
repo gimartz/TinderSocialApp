@@ -7,13 +7,14 @@ import store from './src/store/index'; // Import your Redux store
 import AppNavigator from './navigator';
 import {ToastProvider} from './theme/context';
 import {CustomAlertProvider} from './components/customAlert';
-
+import { AuthProvider, useAuth } from './screens/context/cat';
 
 export default function App() {
  
 
   return (
     <Provider store={store}>
+          <AuthProvider>
       <PaperProvider>
         <ToastProvider>
        
@@ -22,6 +23,7 @@ export default function App() {
           </CustomAlertProvider>
         </ToastProvider>
       </PaperProvider>
+         </AuthProvider>
     </Provider>
   );
 }
