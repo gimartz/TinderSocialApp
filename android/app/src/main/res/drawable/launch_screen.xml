@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background color - using your theme's background color -->
+    <item android:drawable="@color/off_white" />
+    <!-- Or if you want to use your app's actual background color: -->
+    <!-- <item android:drawable="@color/background_color_from_your_theme" /> -->
+
+    <!-- If you want a logo to appear in the center -->
+    <!-- Make sure 'splash_logo' exists in res/mipmap or res/drawable -->
+  <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher_round" />
+    </item>
+</layer-list>
