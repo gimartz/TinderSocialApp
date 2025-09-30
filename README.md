@@ -42,7 +42,7 @@ A React Native application featuring a Tinder-style swipeable card interface wit
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/[your-username]/tinder-chat-ui.git
+   git clone https://github.com/gimartz/TinderSocialApp
    cd tinder-chat-ui
    ```
 
@@ -126,7 +126,7 @@ APK location: `android/app/build/outputs/apk/release/app-release.apk`
 
 ## 📥 Download APK
 
-**APK File**: [Download from Google Drive](https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing)
+**APK File**: [Download from Google Drive](https://drive.google.com/file/d/1uTvMdUkA5hxzdilSu7fBoqJcLOAqium9/view?usp=sharing)
 
 ## 🧪 Testing
 
