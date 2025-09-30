@@ -4,7 +4,7 @@ export interface User {
   id: string;
   name: string;
   age: number;
-  image: string;
+  image: any;
   bio?: string;
   distance?: string;
 }

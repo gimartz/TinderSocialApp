@@ -9,9 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import LoginScreen from './screens/auth/LoginScreen';
 import DashboardScreen from './screens/dashboard/dashboardScreen';
 import OrdersScreen from './screens/match/match';
-
 import SettingsScreen from './screens/settings/settingsScreen';
-
 import {colors} from './theme/colors'; // Import your colors
 import RegisterScreen from './screens/auth/registerScreen';
 import MenuScreen from './screens/menu';
@@ -25,6 +23,7 @@ import LandingScreen from './screens/auth/landing';
 import ChatDetailScreen from './screens/chat/chatDetail';
 import ChatScreen from './screens/chat/main';
 import { Colors } from './components/constants/colors';
+import ProfileScreen from './screens/settings/index';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,7 +35,7 @@ const SettingsStack = createStackNavigator();
 function MatchesNavigator() {
   return (
     <matcheStack.Navigator screenOptions={{headerShown: false}}>
-      <matcheStack.Screen name="OrdersList" component={OrdersScreen} />
+      <matcheStack.Screen name="match" component={OrdersScreen} />
     </matcheStack.Navigator>
   );
 }
@@ -62,7 +61,7 @@ function SettingsNavigator() {
     <SettingsStack.Navigator
       initialRouteName="Setting"
       screenOptions={{headerShown: false}}>
-      <SettingsStack.Screen name="Setting" component={SettingsScreen} />
+      <SettingsStack.Screen name="Setting" component={ProfileScreen} />
     
    
   

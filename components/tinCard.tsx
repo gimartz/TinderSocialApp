@@ -123,7 +123,7 @@ const TinderCard = ({
       >
         <Image
           style={[StyleSheet.absoluteFillObject, styles.image]}
-          source={user.image}
+           source={typeof user.image === 'string' ? { uri: user.image } : user.image}
         />
 
         <Animated.View style={[styles.likeContainer, likeStyle]}>

@@ -12,6 +12,8 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../../components/constants/colors';
 import { CURRENT_USER } from '../../src/navigation/data';
+import {THEME} from '../theme';
+import {Appbar, Card, Button} from 'react-native-paper';
 
 
 const ProfileScreen = () => {
@@ -24,6 +26,9 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+        <Appbar.Header style={styles.appbar}>
+        <Appbar.Content title="Settings" titleStyle={styles.appbarTitle} />
+      </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
@@ -101,7 +106,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-  },
+  },  appbar: {backgroundColor:  '#BF0071', elevation: 0},
+  appbarTitle: {color: THEME.CREAM_WHITE, fontWeight: '800', fontSize: 22},
   scrollContent: {
     paddingBottom: 40,
   },
@@ -113,9 +119,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: '700',
+   fontWeight: 'bold',
     color: Colors.text,
-  },
+  },headerTitle: { fontSize: 32, fontWeight: 'bold' },
   profileCard: {
     backgroundColor: Colors.white,
     margin: 20,

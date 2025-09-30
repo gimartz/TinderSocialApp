@@ -42,10 +42,10 @@ const ProfileScreen = () => {
           />
           <View style={styles.userInfoText}>
             <View style={styles.userNameRow}>
-              <Text style={styles.userName}>Shafikul Islam</Text>
+              <Text style={styles.userName}>Bill Njoku</Text>
               <Icon name="checkmark-circle" size={18} color="#4CAF50" style={{ marginLeft: 5 }} />
             </View>
-            <Text style={styles.userHandle}>@partha31416</Text>
+            <Text style={styles.userHandle}>@</Text>
           </View>
         </View>
 
@@ -107,11 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+ headerTitle: { fontSize: 32, fontWeight: 'bold' },
   headerIcons: {
     flexDirection: 'row',
   },

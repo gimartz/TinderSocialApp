@@ -81,32 +81,6 @@ A React Native application featuring a Tinder-style swipeable card interface wit
    yarn ios
    ```
 
-## 🏗️ Project Structure
-
-```
-tinder-chat-ui/
-├── src/
-│   ├── components/          # Reusable components
-│   │   ├── UserCard.tsx     # Swipeable card component
-│   │   ├── ChatBubble.tsx   # Message bubble component
-│   │   └── TabIcon.tsx      # Bottom tab icons
-│   ├── screens/             # Main screens
-│   │   ├── HomeScreen.tsx   # Swipe cards interface
-│   │   ├── ChatsScreen.tsx  # Chat list
-│   │   ├── ChatDetailScreen.tsx  # Individual chat
-│   │   └── ProfileScreen.tsx     # User profile
-│   ├── navigation/          # Navigation configuration
-│   │   └── AppNavigator.tsx
-│   ├── data/                # Mock data
-│   │   ├── users.ts         # Sample user profiles
-│   │   └── messages.ts      # Sample chat messages
-│   ├── types/               # TypeScript type definitions
-│   │   └── index.ts
-│   └── utils/               # Helper functions
-│       └── formatTime.ts
-├── App.tsx                  # Root component
-└── package.json
-```
 
 ## 📦 Dependencies
 
