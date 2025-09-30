@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -7,37 +7,42 @@ import {
   Image,
   Text,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {THEME} from '../theme';
-import {useFocusEffect} from '@react-navigation/native';
-import { useAuth } from '../context/cat';
+import { THEME } from '../theme';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 type Props = {
   navigation: any;
 };
 
-const SplashScreen = ({navigation}: Props) => {
-   const { isAuthenticated } = useAuth();
+const SplashScreen = ({ navigation }: Props) => {
   const [isInitialized, setInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [navigationDecided, setNavigationDecided] = useState(false);
   const [minWaitTimeElapsed, setMinWaitTimeElapsed] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // simplified auth state
+
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const logoScale = useRef(new Animated.Value(0.3)).current;
   const textOpacity = useRef(new Animated.Value(0)).current;
 
-  // Initialize auth state from AsyncStorage
+  // Initialize auth state and onboarding from AsyncStorage
   useEffect(() => {
     const init = async () => {
-
       try {
-        const value = await AsyncStorage.getItem('@viewedOnboarding');
-        if (value !== null) {
+        const viewedOnboarding = await AsyncStorage.getItem('@viewedOnboarding');
+        const userToken = await AsyncStorage.getItem('@userToken'); // or any auth token/key
+
+        if (viewedOnboarding !== null) {
           setInitialized(true);
+        }
+
+        if (userToken !== null) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
         }
       } catch (e) {
         console.error(e);
@@ -46,10 +51,10 @@ const SplashScreen = ({navigation}: Props) => {
       }
     };
 
-
     init();
   }, []);
-  // Set minimum wait timer (5 seconds)
+
+  // Minimum wait timer (5 seconds)
   useEffect(() => {
     const timer = setTimeout(() => {
       setMinWaitTimeElapsed(true);
@@ -58,30 +63,30 @@ const SplashScreen = ({navigation}: Props) => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Handle navigation when both conditions are met
+  // Navigation decision
   useEffect(() => {
-    if (navigationDecided && minWaitTimeElapsed && animationComplete) {
-      // Navigate based on auth status
+    if (isInitialized && !isLoading) {
+      setNavigationDecided(true);
+    }
+  }, [isInitialized, isLoading]);
+
+  // Navigate when ready
+  useEffect(() => {
+    if ( minWaitTimeElapsed && animationComplete) {
       if (!isAuthenticated) {
-        navigation.replace('OnboardLogin', {
-          screen: 'Land',
-        });
+     navigation.replace('OnboardLogin', {
+screen: 'Land',
+});
       } else {
-        navigation.replace('MainApp', {screen: 'Dashboard'});
+   navigation.replace('MainApp', {screen: 'Dashboard'});
+
       }
     }
-  }, [
-    navigationDecided,
-    minWaitTimeElapsed,
-    animationComplete,
-    isAuthenticated,
-    navigation,
-  ]);
+  }, [navigationDecided, minWaitTimeElapsed, animationComplete, isAuthenticated, navigation]);
 
-  // Start the animation sequence
+  // Animation sequence
   useEffect(() => {
     Animated.sequence([
-      // Fade in and scale up logo
       Animated.parallel([
         Animated.timing(logoOpacity, {
           toValue: 1,
@@ -94,18 +99,16 @@ const SplashScreen = ({navigation}: Props) => {
           useNativeDriver: true,
         }),
       ]),
-
-      // Fade in text
       Animated.timing(textOpacity, {
         toValue: 1,
         duration: 800,
         useNativeDriver: true,
       }),
-
-      // Wait for a moment
-      Animated.delay(500),
-
-      // Fade everything out
+      Animated.timing(new Animated.Value(0), {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
       Animated.parallel([
         Animated.timing(logoOpacity, {
           toValue: 0,
@@ -121,14 +124,7 @@ const SplashScreen = ({navigation}: Props) => {
     ]).start(() => {
       setAnimationComplete(true);
     });
-  }, [logoOpacity, logoScale, textOpacity]);
-
-  // Handle navigation decision once auth is initialized
-  useEffect(() => {
-    if (isInitialized && !isLoading) {
-      setNavigationDecided(true);
-    }
-  }, [isInitialized, isLoading]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -137,23 +133,23 @@ const SplashScreen = ({navigation}: Props) => {
           styles.content,
           {
             opacity: logoOpacity,
-            transform: [{scale: logoScale}],
+            transform: [{ scale: logoScale }],
           },
-        ]}>
-        <Image
-          source={require('../../assets/logo.png')}
-          style={styles.logo}
-        />
-        <Text
+        ]}
+      >
+        <Image source={require('../../assets/logo.png')} style={styles.logo} />
+        <Animated.Text
           style={{
             color: THEME.WARNING_ORANGE,
             fontSize: 20,
             fontWeight: 'bold',
             position: 'absolute',
             bottom: 25,
-          }}>
+            opacity: textOpacity,
+          }}
+        >
           App
-        </Text>
+        </Animated.Text>
       </Animated.View>
     </View>
   );

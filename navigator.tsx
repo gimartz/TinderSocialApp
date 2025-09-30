@@ -3,12 +3,12 @@ import React, {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Or another icon set
+import Icon from 'react-native-vector-icons/Ionicons';
 
 // Import Screens
 import LoginScreen from './screens/auth/LoginScreen';
 import DashboardScreen from './screens/dashboard/dashboardScreen';
-import OrdersScreen from './screens/match/OrdersScreen';
+import OrdersScreen from './screens/match/match';
 
 import SettingsScreen from './screens/settings/settingsScreen';
 
@@ -22,6 +22,9 @@ import SplashScreen from './screens/auth/splash';
 import ChatTabsScreen from './screens/chat/index';
 import ChatsScreen from './screens/chat/chat';
 import LandingScreen from './screens/auth/landing';
+import ChatDetailScreen from './screens/chat/chatDetail';
+import ChatScreen from './screens/chat/main';
+import { Colors } from './components/constants/colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,11 +46,11 @@ function ChatNavigator() {
   return (
     <ChatStack.Navigator screenOptions={{headerShown: false}}>
       <ChatStack.Screen
-        name="MenuTabs"
+        name="chatTabs"
         component={ChatTabsScreen}
       />
       <ChatStack.Screen name="chatItem" component={ChatsScreen} />
-   
+       <ChatStack.Screen name="ChatDetail" component={ChatDetailScreen} />
   
     </ChatStack.Navigator>
   );
@@ -71,31 +74,51 @@ function SettingsNavigator() {
 function MainAppTabs() {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        headerShown: false,
   
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.grey_medium,
-        tabBarStyle: {backgroundColor: colors.background},
-      })}>
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="matches" component={MatchesNavigator} />
-      <Tab.Screen name="Chat" component={ChatNavigator} />
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: string;
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'flame' : 'flame-outline';
+          } else if (route.name === 'Matches') {
+            iconName = focused ? 'heart' : 'heart-outline';
+             } else if (route.name === 'Chats') {
+            iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
+          
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline';
+          } else {
+            iconName = 'help-outline';
+          }
+
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.gray,
+        tabBarStyle: {
+          backgroundColor: Colors.white,
+          borderTopWidth: 1,
+          borderTopColor: Colors.lightGray,
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Home" component={DashboardScreen} />
+      <Tab.Screen name="Matches" component={MatchesNavigator} />
+      <Tab.Screen name="Chats" component={ChatNavigator} />
      
       <Tab.Screen
-        name="Settings"
+        name="Profile"
         component={SettingsNavigator}
-        listeners={({navigation, route}) => ({
-          tabPress: e => {
-            // Prevent default action
-            e.preventDefault();
-
-            // Reset the settings stack to initial route
-            navigation.navigate('Settings', {
-              screen: 'Setting',
-            });
-          },
-        })}
+      
       />
     </Tab.Navigator>
   );

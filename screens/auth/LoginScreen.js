@@ -6,33 +6,34 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
-  StatusBar,
+  TouchableOpacity,
   Alert,
 } from 'react-native';
-import {
-  TextInput,
-  Button,
-  Card,
-  Title,
-  Paragraph,
-  HelperText,
-} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  loginUser,
-  selectFcmToken,
-  UpdateFcm,
-} from '../../src/store/features/auth/authSlice';
 import {colors} from '../../theme/colors'; // Your defined color theme
 import {SafeAreaView} from 'react-native-safe-area-context'; // For handling safe areas (notches, etc.)
 import {useCustomAlert} from '../../components/customAlert';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {STORAGE_KEYS} from '../../utils/storage';
-import { THEME } from '../theme';
+import {
+  Text,
+  TextInput,
+  Button,
+  Checkbox,
+  Provider as PaperProvider,
+  DefaultTheme,
+} from 'react-native-paper';;
+import Icon from 'react-native-vector-icons/Ionicons';
 
-// Replace with your actual logo
-const logo = require('../../assets/logo.png'); // Ensure this path is correct and the image exists
+// Define a custom theme to override default colors
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#BF0071', // Brand 
+    accent: '#4A90E2',  // Forgot password blue
+    background: 'white',
+    surface: '#F5F5F5', // Input background
+    onSurface: '#000000',
+  },
+};
 
 const LoginScreen = ({navigation}) => {
   const {showAlert} = useCustomAlert();
@@ -42,11 +43,8 @@ const LoginScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [deviceOs] = useState(Platform.OS === 'ios' ? 'IOS' : 'ANDROID');
-
+  const [rememberMe, setRememberMe] = useState(true);
   
-
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
 
   const validateFields = () => {
     let isValid = true;
@@ -68,11 +66,15 @@ const LoginScreen = ({navigation}) => {
     }
     return isValid;
   };
-
+ const handleBack = () => {
+  
+      navigation.goBack();
+    
+  };
   const handleLogin = async () => {
-    if (!validateFields()) {
-      return;
-    }
+    // if (!validateFields()) {
+    //   return;
+    // }
 
     const vendor = {email, password};
     setLoading(true);
@@ -96,255 +98,203 @@ const LoginScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+     <PaperProvider theme={theme}>
+      <SafeAreaView style={styles.container}>
+        {/* Header */} 
+               
+                
+        <View style={styles.header}>
+ <TouchableOpacity onPress={handleBack}>
+                  <Icon name="arrow-back" size={28} color="#121212" />
+                </TouchableOpacity>
+          <Text variant="headlineLarge" style={styles.titleRed}>Welcome</Text>
+          <Text variant="headlineLarge" style={styles.titleBlack}>back!</Text>
+        </View>
+        <Text style={styles.subtitle}>
+       Sign in to discover matches, chat instantly, and find meaningful connections near you. </Text>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidingContainer}>
-        <ScrollView
-          contentContainerStyle={styles.scrollViewContent}
-          keyboardShouldPersistTaps="handled">
-          {/* Top Section with Logo and Title */}
-          <View style={styles.topSection}>
-            <Image source={logo} style={styles.logo} resizeMode="contain" />
-            <Title style={styles.appTitle}>Vendor</Title>
-            <Paragraph style={styles.appSubtitle}>
-              Manage your operations efficiently
-            </Paragraph>
-          </View>
+        {/* Input Fields */}
+        <TextInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          mode="outlined"
+          style={styles.input}
+          left={<TextInput.Icon icon="email-outline" />}
+          theme={{ roundness: 12 }}
+          outlineStyle={styles.inputOutline}
+        />
+        <TextInput
+          label="Password"
+          value={password} 
+          onChangeText={setPassword}
+          mode="outlined"
+          secureTextEntry={!isPasswordVisible}
+          style={styles.input}
+          left={<TextInput.Icon icon="lock-outline" />}
+          right={
+            <TextInput.Icon
+              icon={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            />
+          }
+          theme={{ roundness: 12 }}
+          outlineStyle={styles.inputOutline}
+        />
 
-          {/* Login Card - Overlapping the top section */}
-          <Card style={styles.loginCard} elevation={10}>
-            <Card.Content>
-              <Title style={styles.cardTitle}>Sign In</Title>
-              <Paragraph style={styles.cardSubtitle}>
-                Welcome back! Please enter your details
-              </Paragraph>
+        {/* Options Row */}
+        <View style={styles.optionsRow}>
+          <Checkbox.Item
+            label="Remember me"
+            status={rememberMe ? 'checked' : 'unchecked'}
+            onPress={() => setRememberMe(!rememberMe)}
+            position="leading"
+            style={styles.checkboxContainer}
+            labelStyle={styles.checkboxLabel}
+            color={theme.colors.primary}
+          />
+          <TouchableOpacity>
+            <Text style={styles.forgotPassword}>Forgot password</Text>
+          </TouchableOpacity>
+        </View>
 
-              {/* Email Input */}
-              <View style={styles.inputContainer}>
-                <TextInput
-                  label="Email Address"
-                  value={email}
-                  onChangeText={setEmail}
-                  mode="flat" // Modern flat input style
-                  style={styles.input}
-                  textColor={THEME.DARK_CHARCOAL}
-                  activeUnderlineColor={colors.primary} // Underline color when active
-                  underlineColor={colors.grey_medium} // Default underline color
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  error={!!emailError}
-                  theme={{
-                    colors: {
-                      placeholder: colors.placeholder,
-                      text: colors.text,
-                      primary: colors.primary,
-                      background: colors.surface,
-                    },
-                  }}
-                />
-                <HelperText
-                  type="error"
-                  visible={!!emailError}
-                  style={styles.helperText}>
-                  {emailError}
-                </HelperText>
-              </View>
+        {/* Buttons */}
+        <Button
+          mode="contained"
+          onPress={handleLogin}
+          style={styles.signInButton}
+          labelStyle={styles.signInButtonLabel}
+          contentStyle={styles.signInButtonContent}
+        >
+          Sign in
+        </Button>
 
-              {/* Password Input */}
-              <View style={styles.inputContainer}>
-                <TextInput
-                  label="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  mode="flat" // Modern flat input style
-                  style={styles.input}
-                  activeUnderlineColor={colors.primary}
-                  textColor={THEME.DARK_CHARCOAL}
-                  underlineColor={colors.grey_medium}
-                  secureTextEntry={!isPasswordVisible}
-                  error={!!passwordError}
-                  right={
-                    <TextInput.Icon
-                      icon={isPasswordVisible ? 'eye-off' : 'eye'}
-                      onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                      color={colors.grey_medium}
-                    />
-                  }
-                  theme={{
-                    colors: {
-                      placeholder: colors.placeholder,
-                      text: colors.text,
-                      primary: colors.primary,
-                      background: colors.surface,
-                    },
-                  }}
-                />
-                <HelperText
-                  type="error"
-                  visible={!!passwordError}
-                  style={styles.helperText}>
-                  {passwordError}
-                </HelperText>
-              </View>
+        <View style={styles.dividerContainer}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>Or</Text>
+          <View style={styles.dividerLine} />
+        </View>
 
-              {/* Forgot Password Button */}
-              <Button
-                mode="text"
-                onPress={() => navigation.navigate('ForgotPassword')}
-                style={styles.forgotPasswordButton}
-                labelStyle={styles.forgotPasswordText}>
-                Forgot Password?
-              </Button>
+        <Button
+          mode="outlined"
+          onPress={() => console.log('Continue with Google')}
+          style={styles.googleButton}
+          labelStyle={styles.googleButtonLabel}
+          icon={() => <Image source={require('../../assets/logo.png')} style={{width: 20, height: 20}} />} // Add google-logo.png to your assets
+        >
+          Continue with google
+        </Button>
 
-              {/* Login Button */}
-              <Button
-                buttonColor={colors.primary}
-                mode="contained"
-                onPress={handleLogin}
-                style={styles.loginButton}
-                disabled={loading}
-                loading={loading}
-                labelStyle={styles.loginButtonLabel}>
-                {loading ? 'Authenticating...' : 'Login'}
-              </Button>
-            </Card.Content>
-          </Card>
-
-          {/* Sign Up Link */}
-          <Button
-            mode="text"
-            onPress={() => navigation.navigate('Register')}
-            style={styles.signUpButton}
-            labelStyle={styles.signUpText}>
-            Don't have an account?{' '}
-            <Paragraph style={{fontWeight: 'bold', color: colors.primary}}>
-              Sign Up
-            </Paragraph>
-          </Button>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.createAccountText}>Create an account</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </PaperProvider>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    backgroundColor: colors.background, // Main screen background
+    backgroundColor: 'white',
+    padding: 25,
   },
-  keyboardAvoidingContainer: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-    justifyContent: 'flex-start', // Align content to the top initially
-  },
-  topSection: {
-    backgroundColor: colors.primary, // Header background color
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 50, // Space from the top of the screen
-    paddingBottom: 100, // Provides space for the card to overlap
-    borderBottomLeftRadius: 30, // Subtle curve
-    borderBottomRightRadius: 30,
-    overflow: 'hidden', // Ensures radius is clipped correctly
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    borderRadius: 50, // Circular logo
-    borderWidth: 2,
-    borderColor: colors.background, // White border around logo
-    marginBottom: 15,
-  },
-  appTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.text, // Using text color for contrast on primary background
-    marginBottom: 5,
-  },
-  appSubtitle: {
-    fontSize: 16,
-    color: colors.grey_dark, // Slightly darker grey for subtitle
-    marginBottom: 20,
-    textAlign: 'center',
-    paddingHorizontal: 20,
-  },
-  loginCard: {
-    width: '90%', // Wider card
-    alignSelf: 'center', // Center the card
-    marginTop: -70, // Overlaps the topSection
-    borderRadius: 15, // Rounded corners for the card
-    backgroundColor: colors.surface,
-    paddingVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 8}, // More pronounced shadow
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 10,
-    marginBottom: 10, // Space below the card
-  },
-  cardTitle: {
-    textAlign: 'center',
+  header: {
     marginBottom: 10,
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: colors.text,
   },
-  cardSubtitle: {
-    textAlign: 'center',
-    marginBottom: 25,
-    color: colors.grey_medium,
+  titleRed: {
+    color: '#BF0071',
+    fontWeight: 'bold',fontSize:40
+  },
+  titleBlack: {
+    color: '#000',
+    fontWeight: 'bold',fontSize:40,
+    marginTop: 10, // To bring it closer to "Welcome"
+  },
+  subtitle: {
     fontSize: 15,
-  },
-  inputContainer: {
-    marginBottom: 5,
+    color: '#8A8A8A',
+    marginBottom: 30,
+    lineHeight: 22,
   },
   input: {
-    backgroundColor: colors.surface, // Ensures input background matches card for flat mode
-    fontSize: 16,
-    paddingHorizontal: 0, // Remove default padding for flat mode
-  },
-  helperText: {
-    marginLeft: 0,
-    marginBottom: 10,
-    color: colors.accent, // Error messages in accent red
-    fontSize: 12,
-  },
-  forgotPasswordButton: {
-    alignSelf: 'flex-end',
-    marginTop: 5,
     marginBottom: 15,
+    backgroundColor: 'white',height:80
   },
-  forgotPasswordText: {
-    color: colors.primary, // Link text in primary color
+  inputOutline: {
+      borderColor: '#F7F7F7', // Match background to hide the border initially
+  },
+  optionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkboxContainer: {
+    paddingHorizontal: 0,
+    marginLeft: -10, // Align checkbox with input fields
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    color: '#555',
+  },
+  forgotPassword: {
+    color: '#4A90E2',
     fontSize: 14,
     fontWeight: '600',
   },
-  loginButton: {
-    width: '100%',
-    paddingVertical: 8,
-    marginTop: 15,
-    borderRadius: 8,
-    backgroundColor: colors.primary, // Login button in primary color
+  signInButton: {
+    borderRadius: 12,
+    elevation: 2,
   },
-  loginButtonLabel: {
-    fontSize: 18,
+  signInButtonContent: {
+      paddingVertical: 8,
+  },
+  signInButtonLabel: {
+    fontSize: 16,
     fontWeight: 'bold',
-    color: colors.text, // Text color for contrast on primary button
   },
-  signUpButton: {
-    marginTop: 20,
-    marginBottom: 30, // Space at the bottom
-    alignSelf: 'center', // Center the sign up button
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 30,
   },
-  signUpText: {
-    color: colors.text, // Default text color
-    fontSize: 15,
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  dividerText: {
+    marginHorizontal: 15,
+    color: '#8A8A8A',
+  },
+  googleButton: {
+    borderRadius: 12,
+    borderColor: '#E0E0E0',
+    paddingVertical: 4,
+  },
+  googleButtonLabel: {
+    color: '#555',
+    fontWeight: '600',
+  },
+  footer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginBottom: 10,
+  },
+  footerText: {
+    color: '#8A8A8A',
+  },
+  createAccountText: {
+    color: '#BF0071',
+    fontWeight: 'bold',
   },
 });
 

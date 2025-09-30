@@ -15,11 +15,12 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+            <Appbar.Header style={styles.appbar}>
+        <Appbar.Content title="Settings" titleStyle={styles.appbarTitle} />
+      </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Header */}  
-         <Appbar.Header style={styles.appbar}>
-        <Appbar.Content title="Manage your Matches" titleStyle={styles.appbarTitle} />
-      </Appbar.Header>
+   
 
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Profile</Text>
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 25,
-  },   appbar: {backgroundColor: THEME.DARK_CHARCOAL, elevation: 0},
+  },   appbar: {backgroundColor:  '#BF0071', elevation: 0},
   appbarTitle: {color: THEME.CREAM_WHITE, fontWeight: '800', fontSize: 22},
   avatar: {
     width: 70,

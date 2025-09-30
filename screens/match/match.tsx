@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { moods, exploreProfiles, Mood, ExploreProfile } from './data';
+import { Appbar } from 'react-native-paper';
 
 // Reusable Mood Card Component
 const MoodCard = ({ item }: { item: Mood }) => (
@@ -62,7 +63,9 @@ const MatchesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+       <Appbar.Header style={styles.appbar}>
+        <Appbar.Content title="Manage your Matches" titleStyle={styles.appbarTitle} />
+      </Appbar.Header>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Matches</Text>
         <View style={styles.headerIcons}>
@@ -115,6 +118,8 @@ const MatchesScreen = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: 'white' },
+      appbar: {backgroundColor:  '#BF0071', elevation: 0},
+      appbarTitle: {color:  'white', fontWeight: '800', fontSize: 22},
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 5 },
     headerTitle: { fontSize: 32, fontWeight: 'bold' },
     headerIcons: { flexDirection: 'row' },

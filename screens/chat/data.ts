@@ -16,9 +16,9 @@ export interface RecentChat {
 }
 
 export const onlineUsers: OnlineUser[] = [
-  { id: '1', name: 'Stella', avatar: 'https://randomuser.me/api/portraits/women/1.jpg' },
-  { id: '2', name: 'Vera', avatar: 'https://randomuser.me/api/portraits/women/2.jpg' },
-  { id: '3', name: 'Lucy', avatar: 'https://randomuser.me/api/portraits/women/3.jpg' },
+  { id: '1', name: 'Bimpe', avatar: 'https://randomuser.me/api/portraits/women/1.jpg' },
+  { id: '2', name: 'Nneka', avatar: 'https://randomuser.me/api/portraits/women/2.jpg' },
+  { id: '3', name: 'Dera', avatar: 'https://randomuser.me/api/portraits/women/3.jpg' },
   { id: '4', name: 'Janet', avatar: 'https://randomuser.me/api/portraits/women/4.jpg' },
   { id: '5', name: 'Isabel', avatar: 'https://randomuser.me/api/portraits/women/5.jpg' },
   { id: '6', name: 'Diana', avatar: 'https://randomuser.me/api/portraits/women/6.jpg' },

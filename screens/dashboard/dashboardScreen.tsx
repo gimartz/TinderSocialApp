@@ -1,112 +1,150 @@
-import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import {
-  interpolate,
-  useAnimatedReaction,
-  useDerivedValue,
-  useSharedValue,
-  withDecay,
-  withSpring,
-  runOnJS,
-} from 'react-native-reanimated';
-import TinderCard from '../../components/tinderCard/card';
-import AnimatedStack from '../../components/tinderCard/swipe';
+// src/screens/HomeScreen.tsx
+import React, { useState } from 'react';
+import { View, StyleSheet, SafeAreaView, Text, Platform } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
+import TinderCard from '../../components/tinCard';
+import ActionButton from '../../components/button';
 
-const dummuUsers = [
-  {
-    id: 1,
-    image:
-      'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/1.jpg',
-    name: 'Dani',age:21
-  },
-  {
-    id: 2,
-    image:
-      'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/2.jpg',
-    name: 'Jon',age:22
-  },
-  {
-    id: 3,
-    image:
-      'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/3.jpg',
-    name: 'Dani', age:28
-  },
-  {
-    id: 4,
-    image:
-      'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/4.jpeg',
-    name: 'Alice',age:34
-  },
-  {
-    id: 5,
-    image:
-      'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/5.jpg',
-    name: 'Dani',age:32
-  },
-  {
-    id: 6,
-    image:
-      'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/6.jpg',
-    name: 'Kelsey',age:32
-  },
-];
+import { Colors } from '../../components/constants/colors';
+import { USERS } from '../../src/navigation/data';
 
-const TinderScreen = () => {
-  const [users, setUsers] = useState(dummuUsers);
+const HomeScreen = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const activeIndex = useSharedValue(0);
-  const [index, setIndex] = useState(0);
 
-  useAnimatedReaction(
-    () => activeIndex.value,
-    (value, prevValue) => {
-      if (Math.floor(value) !== index) {
-        runOnJS(setIndex)(Math.floor(value));
-      }
-    }
-  );
-  const onSwipeLeft = (user:any) => {
-    console.warn('swipe left', user.name);
+  const handleResponse = (isLike: boolean) => {
+    console.log(isLike ? 'Liked' : 'Passed');
+    setCurrentIndex(prevIndex => prevIndex + 1);
   };
 
-  const onSwipeRight = (user:any)=> {
-    console.warn('swipe right: ', user.name);
-  };
-  useEffect(() => {
-    if (index > users.length - 3) {
-      console.warn('Last 2 cards remining. Fetch more!');
-      setUsers((usrs) => [...usrs, ...dummuUsers.reverse()]);
+  const handleLike = () => {
+    if (currentIndex < USERS.length) {
+      activeIndex.value = currentIndex + 1;
+      handleResponse(true);
     }
-  }, [index]);
+  };
 
-  const onResponse = (res: boolean) => {
-    console.log('on Response: ', res);
+  const handlePass = () => {
+    if (currentIndex < USERS.length) {
+      activeIndex.value = currentIndex + 1;
+      handleResponse(false);
+    }
+  };
+
+  const handleSuperLike = () => {
+    if (currentIndex < USERS.length) {
+      console.log('Super Liked!');
+      activeIndex.value = currentIndex + 1;
+      handleResponse(true);
+    }
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-  
-      {/* {users.map((user, index) => (
-        <TinderCard
-          key={`${user.id}-${index}`}
-          user={user}
-          numOfCards={users.length}
-          index={index}
-          activeIndex={activeIndex}
-          onResponse={onResponse}
-        />
-      ))} */}
-         <AnimatedStack
-        data={users}
-        renderItem={({item}: {item: typeof dummuUsers[0]}) => <TinderCard user={item}  numOfCards={users.length}
-          index={index}
-          activeIndex={activeIndex}
-          onResponse={onResponse} />}
-        onSwipeLeft={onSwipeLeft}
-        onSwipeRight={onSwipeRight}
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.logoText}>
+       Discover <Text style={{ color: Colors.primary }}>more</Text>
+        </Text>
+      </View>
+
+      <View style={styles.cardsContainer}>
+        {currentIndex >= USERS.length ? (
+          <View style={styles.noMoreCards}>
+            <Text style={styles.noMoreCardsText}>No more profiles</Text>
+            <Text style={styles.noMoreCardsSubtext}>
+              Check back later for new matches
+            </Text>
+          </View>
+        ) : (
+          <>
+            {USERS.slice(currentIndex, currentIndex + 3).map((user, index) => (
+              <TinderCard
+                key={user.id}
+                user={user}
+                numOfCards={3}
+                index={currentIndex + index}
+                activeIndex={activeIndex}
+                onResponse={handleResponse}
+              />
+            ))}
+          </>
+        )}
+      </View>
+
+      {currentIndex < USERS.length && (
+        <View style={styles.buttonsContainer}>
+          <ActionButton
+            name="close"
+            size={32}
+            color={Colors.nope}
+            onPress={handlePass}
+          />
+          <ActionButton
+            name="star"
+            size={28}
+            color={Colors.secondary}
+            onPress={handleSuperLike}
+            style={styles.superLikeButton}
+          />
+          <ActionButton
+            name="heart"
+            size={32}
+            color={Colors.like}
+            onPress={handleLike}
+          />
+        </View>
+      )}
+    </SafeAreaView>
   );
 };
 
-export default TinderScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',paddingTop:Platform.OS=='android'?40:2
+  },
+  logoText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: Colors.text,
+  },
+  cardsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noMoreCards: {
+    alignItems: 'center',
+    padding: 40,
+  },
+  noMoreCardsText: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 8,
+  },
+  noMoreCardsSubtext: {
+    fontSize: 16,
+    color: Colors.gray,
+    textAlign: 'center',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    gap: 20,
+  },
+  superLikeButton: {
+    width: 50,
+    height: 50,
+  },
+});
+
+export default HomeScreen;

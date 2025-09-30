@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Appbar, Card, Button} from 'react-native-paper';
 
 import {THEME} from '../theme';
-const ChatsScreen = ({navigation}) => {
+const ChatsScreen = ({ navigation }: { navigation: any }): any => {
   const renderOnlineUser = ({ item }: { item: OnlineUser }) => (
     <TouchableOpacity style={styles.onlineUserContainer}>
       <View>
@@ -25,7 +25,7 @@ const ChatsScreen = ({navigation}) => {
     }
     
     return (
-        <TouchableOpacity style={styles.chatItemContainer} onPress={navigation.navigate('chatItem')}>
+        <TouchableOpacity style={styles.chatItemContainer} onPress={()=>navigation.navigate('chatItem')}>
             <Image source={{ uri: item.avatar }} style={styles.chatAvatar} />
             <View style={styles.chatTextContainer}>
                 <Text style={styles.chatName}>{item.name}</Text>
@@ -51,7 +51,7 @@ const ChatsScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
           <Appbar.Header style={styles.appbar}>
-        <Appbar.Content title="Manage your Matches" titleStyle={styles.appbarTitle} />
+        <Appbar.Content title="Start a Convo" titleStyle={styles.appbarTitle} />
       </Appbar.Header>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Online Now</Text>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-    appbar: {backgroundColor: '#BF007',elevation: 0},
+    appbar: {backgroundColor: '#BF0071',elevation: 0},
   appbarTitle: {color: THEME.CREAM_WHITE, fontWeight: '800', fontSize: 22},
   lastMessageContainer: {
     flexDirection: 'row',
